@@ -11,6 +11,7 @@
 @interface ViewController ()
 
 @property (nonatomic) UITextField* billAmountTextField;
+@property (nonatomic) UITextField* tipPercentTextField;
 @property (nonatomic) UILabel* tipAmountLabel;
 
 @end
@@ -39,6 +40,21 @@
     
     [NSLayoutConstraint constraintWithItem:self.billAmountTextField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40].active = YES;
     
+    self.tipPercentTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+    self.tipPercentTextField.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.tipPercentTextField];
+    
+    self.tipPercentTextField.backgroundColor = [UIColor whiteColor];
+    self.tipPercentTextField.keyboardType = UIKeyboardTypeNumberPad;
+    
+    [NSLayoutConstraint constraintWithItem:self.tipPercentTextField attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.billAmountTextField attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0].active = YES;
+    
+    [NSLayoutConstraint constraintWithItem:self.tipPercentTextField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.billAmountTextField attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0].active = YES;
+    
+    [NSLayoutConstraint constraintWithItem:self.tipPercentTextField attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0].active = YES;
+    
+    [NSLayoutConstraint constraintWithItem:self.tipPercentTextField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.billAmountTextField attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20.0].active = YES;
+    
     UIButton* calculateTipButton = [[UIButton alloc] initWithFrame:CGRectZero];
     calculateTipButton.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -48,7 +64,7 @@
     
     [calculateTipButton addTarget:self action:@selector(calculateTip:) forControlEvents:UIControlEventTouchUpInside];
     
-    [NSLayoutConstraint constraintWithItem:calculateTipButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.billAmountTextField attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20].active = YES;
+    [NSLayoutConstraint constraintWithItem:calculateTipButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.tipPercentTextField attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20].active = YES;
     
     [NSLayoutConstraint constraintWithItem:calculateTipButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0].active = YES;
     
@@ -64,7 +80,7 @@
 }
 
 - (void) calculateTip:(UIButton *)sender {
-    self.tipAmountLabel.text = [NSString stringWithFormat:@"Tip Amount is: $%.2f",self.billAmountTextField.text.integerValue * 0.15];
+    self.tipAmountLabel.text = [NSString stringWithFormat:@"Tip Amount is: $%.2f",self.billAmountTextField.text.integerValue * self.tipPercentTextField.text.integerValue / 100.0];
 }
 
 @end
