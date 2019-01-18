@@ -83,7 +83,7 @@
     [calculateTipButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.view addSubview:calculateTipButton];
     
-    [calculateTipButton addTarget:self action:@selector(calculateTip:) forControlEvents:UIControlEventTouchUpInside];
+    [calculateTipButton addTarget:self action:@selector(calculateTipButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     [NSLayoutConstraint constraintWithItem:calculateTipButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:tipSlider attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20].active = YES;
     
@@ -93,7 +93,7 @@
     self.tipAmountLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tipAmountLabel];
     self.tipAmountLabel.textAlignment = NSTextAlignmentCenter;
-    self.tipAmountLabel.text = @"Tip Amount: ";
+    self.tipAmountLabel.text = @"Tip Amount: $0.00";
     
     [NSLayoutConstraint constraintWithItem:self.tipAmountLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0].active = YES;
     [NSLayoutConstraint constraintWithItem:self.tipAmountLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:calculateTipButton attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20.0].active = YES;
@@ -103,8 +103,13 @@
     
 }
 
-- (void) calculateTip:(UIButton *)sender {
-    self.tipAmountLabel.text = [NSString stringWithFormat:@"Tip Amount is: $%.2f", self.billAmountTextField.text.integerValue * self.tipPercentTextField.text.integerValue / 100.0];
+-(void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void) calculateTip {
+    self.tipAmountLabel.text = [NSString stringWithFormat:@"Tip Amount: $%.2f", self.billAmountTextField.text.integerValue * self.tipPercentTextField.text.integerValue / 100.0];
 }
 
 - (void) keyboardAppeared:(NSNotification *)notification {
@@ -117,15 +122,19 @@
 
 - (void) sliderValueChanged:(UISlider *)slider {
     self.tipPercentTextField.text = [NSString stringWithFormat:@"%.f", slider.value];
-    [self calculateTip: nil];
+    [self calculateTip];
 }
 
 - (void) billAmountChanged:(UITextField *)sender {
-    
-    [self calculateTip: nil];
+    [self calculateTip];
 }
 
 - (void) tipPercentChanged:(UITextField *)sender {
-    [self calculateTip: nil];
+    [self calculateTip];
 }
+
+- (void) calculateTipButtonPressed:(UIButton *)sender {
+    [self calculateTip];
+}
+
 @end
